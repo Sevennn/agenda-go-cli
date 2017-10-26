@@ -41,9 +41,9 @@ func init() {
 	errlog = getErrLogFile()
 	set(ioutil.Discard, os.Stdout, errlog)
 
-	Info.Println("Special Information")
-	Warning.Println("There is something you need to know about")
-	Error.Println("Something has failed")
+	// Info.Println("Special Information")
+	// Warning.Println("There is something you need to know about")
+	Error.Println("Start up")
 }
 
 // Free : close log file

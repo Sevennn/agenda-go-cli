@@ -3,7 +3,9 @@ package entity
 import (
 	"os"
 	"io"
+	"bufio"
 	"path/filepath"
+	"errors"
 	"log"
 	"encoding/json"
 	"agenda-go-cli/loghelper"
@@ -16,6 +18,9 @@ type MeetingFilter func (*Meeting) bool
 
 var userinfoPath = "/src/agenda-go-cli/data/userinfo"
 var metinfoPath = "/src/agenda-go-cli/data/meetinginfo"
+var curUserPath = "/src/agenda-go-cli/data/curUser.txt"
+
+var curUserName *string;
 
 var dirty bool
 
@@ -30,6 +35,7 @@ func init()  {
 	birDir := os.Getenv("GOPATH")
 	userinfoPath = filepath.Join(birDir, userinfoPath)
 	metinfoPath = filepath.Join(birDir, metinfoPath)
+	curUserPath = filepath.Join(birDir, curUserPath)
 	if err := readFromFile(); err != nil {
 		errLog.Println("readFromFile fail:", err)
 	}
@@ -157,47 +163,80 @@ func DeleteMeeting(filter MeetingFilter) int {
 	return count
 }
 
-// GetData : for test
-// @param : test file path
-func GetData(uPath, mPath string) ([]User, []Meeting) {
-	if len(uPath) == 0 || len(mPath) == 0 {
-		return uData, mData
+// GetCurUser : get current user
+// @return the current user
+// @return error if current user does not exist
+func GetCurUser() (User, error) {
+	if curUserName == nil {
+		return User{}, errors.New("Current user does not exist")
 	}
-	userinfoPath = uPath
-	metinfoPath = mPath
-	uData = nil
-	mData = nil
-	if err := readFromFile(); err != nil {
-		errLog.Println("readFromFile fail:", err)
+	for _, v := range uData {
+		if v.Name == *curUserName {
+			return v, nil
+		}
 	}
-	if err := writeToFile(); err != nil {
-		errLog.Println("writeToFile fail:", err)
+	return User{}, errors.New("Current user does not exist")
+}
+
+// SetCurUser : get current user
+// @param current user
+func SetCurUser(u *User) {
+	if (curUserName == nil) {
+		p := u.Name
+		curUserName = &p
+	} else {
+		*curUserName = u.Name
 	}
-	// errLog.Println(uData)
-	// errLog.Println(mData)
-	return uData, mData
 }
 
 // readFromFile : read file content into memory
 // @return if fail, error will be returned
 func readFromFile() error {
-	if err := readUser(); err != nil {
-		return err
+	var e []error
+	str, err1 := readString(curUserPath)
+	if err1 != nil {
+		e = append(e, err1)
 	}
-	return readMet()
+	curUserName = str
+	if err := readUser(); err != nil {
+		e = append(e, err)
+	}
+	if err := readMet(); err != nil {
+		e = append(e, err)
+	}
+	if len(e) == 0 {
+		return nil
+	}
+	er := e[0]
+	for i := 1; i < len(e); {
+		er = errors.New(er.Error() + e[i].Error())
+	}
+	return er
 }
 
 // writeToFile : write file content from memory
 // @return if fail, error will be returned
 func writeToFile() error {
-	// dirty = true
-	if !dirty {
+	var e []error
+	if err := writeString(curUserPath, curUserName); err != nil {
+		e = append(e, err)
+	}
+	if dirty {
+		if err := writeJSON(userinfoPath, uData); err != nil {
+			e = append(e, err)
+		}
+		if err := writeJSON(metinfoPath, mData); err != nil {
+			e = append(e, err)
+		}
+	}
+	if len(e) == 0 {
 		return nil
 	}
-	if err := writeJSON(userinfoPath, uData); err != nil {
-		return err;
+	er := e[0]
+	for i := 1; i < len(e); {
+		er = errors.New(er.Error() + e[i].Error())
 	}
-	return writeJSON(metinfoPath, mData)
+	return er
 }
 
 func readUser() error {
@@ -250,4 +289,44 @@ func writeJSON(fpath string, data interface{}) error {
 		return err
 	}
 	return nil
+}
+
+func writeString(path string, data *string) error {
+	file, err := os.Create(path)
+	if err != nil {
+		loghelper.Error.Println("Create file error:", path)
+		return err
+	}
+	defer file.Close()
+
+	if data == nil {
+		return nil
+	}
+	writer := bufio.NewWriter(file)
+	if _, err := writer.WriteString(*data); err != nil {
+		loghelper.Error.Println("Write file fail:", path)
+		return err
+	}
+	if err := writer.Flush(); err != nil {
+		loghelper.Error.Println("Flush file fail:", path)
+		return err
+	}
+	return nil
+}
+
+func readString(path string) (*string, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		loghelper.Error.Println("Open file error:", path)
+		return nil, err
+	}
+	defer file.Close()
+
+	reader := bufio.NewReader(file)
+	str, err := reader.ReadString('\n');
+	if err != nil && err != io.EOF {
+		loghelper.Error.Println("Read file fail:", path)
+		return nil, err
+	}
+	return &str, nil
 }
