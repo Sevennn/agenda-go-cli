@@ -17,3 +17,6 @@
 
 # Log file
 *.log
+
+# data
+data/
