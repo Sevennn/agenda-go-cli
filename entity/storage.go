@@ -4,7 +4,7 @@ import (
 	"os"
 	"io"
 	"bufio"
-	"path/filepath"
+	// "path/filepath"
 	"errors"
 	"log"
 	"encoding/json"
@@ -16,9 +16,9 @@ type UserFilter func (*User) bool
 // MeetingFilter : MeetingFilter types take an *User and return a bool value.
 type MeetingFilter func (*Meeting) bool
 
-var userinfoPath = "/src/agenda-go-cli/data/userinfo"
-var metinfoPath = "/src/agenda-go-cli/data/meetinginfo"
-var curUserPath = "/src/agenda-go-cli/data/curUser.txt"
+var userinfoPath = "../data/userinfo"
+var metinfoPath = "../data/meetinginfo"
+var curUserPath = "../data/curUser.txt"
 
 var curUserName *string;
 
@@ -32,13 +32,18 @@ var errLog *log.Logger
 func init()  {
 	errLog = loghelper.Error
 	dirty = false
-	birDir := os.Getenv("GOPATH")
-	userinfoPath = filepath.Join(birDir, userinfoPath)
-	metinfoPath = filepath.Join(birDir, metinfoPath)
-	curUserPath = filepath.Join(birDir, curUserPath)
+	// birDir := os.Getenv("GOPATH")
+	// userinfoPath = filepath.Join(birDir, userinfoPath)
+	// metinfoPath = filepath.Join(birDir, metinfoPath)
+	// curUserPath = filepath.Join(birDir, curUserPath)
 	if err := readFromFile(); err != nil {
 		errLog.Println("readFromFile fail:", err)
 	}
+}
+
+// Logout : logout
+func Logout() error {
+	return Sync()
 }
 
 // Sync : sync file
@@ -208,7 +213,7 @@ func readFromFile() error {
 		return nil
 	}
 	er := e[0]
-	for i := 1; i < len(e); {
+	for i := 1; i < len(e); i++ {
 		er = errors.New(er.Error() + e[i].Error())
 	}
 	return er
@@ -233,7 +238,7 @@ func writeToFile() error {
 		return nil
 	}
 	er := e[0]
-	for i := 1; i < len(e); {
+	for i := 1; i < len(e); i++ {
 		er = errors.New(er.Error() + e[i].Error())
 	}
 	return er
