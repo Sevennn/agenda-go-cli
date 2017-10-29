@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
+	"runtime"
 )
 
 var (
@@ -15,8 +17,10 @@ var (
 	Warning *log.Logger
 	// Error : Stderr
 	Error   *log.Logger
-	// for test
-	Test string
+
+	// GoPath : GoPath
+	GoPath string
+
 )
 
 var errlog *os.File
@@ -54,13 +58,36 @@ func Free()  {
 }
 
 func getErrLogFile() *os.File  {
-	Test = "/mnt/c/Users/asus/Desktop/大三上/Golang/Agenda"
-	// os.Getenv("GOPATH")
-	logPath := filepath.Join(Test, "/src/agenda-go-cli/data/error.log")
+
+	if sP := GetGOPATH(); sP != nil {
+		GoPath = *sP
+	} else {
+		log.Fatalf("data file not ecist\n")
+		os.Exit(1)
+	}
+	logPath := filepath.Join(GoPath, "/src/agenda-go-cli/data/error.log")
+
 	file, err := os.OpenFile(logPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
-		log.Fatalf("file open error : %v", err)
+		log.Fatalf("file open error : %v\n", err)
 	}
 	return file;
 	// defer file.Close()
+}
+
+// GetGOPATH : get GOPATH
+func GetGOPATH() *string {
+	var sp string
+	if runtime.GOOS == "windows" {
+		sp = ";"
+	} else {
+		sp = ":"
+	}
+	goPath := strings.Split(os.Getenv("GOPATH"), sp)
+	for _, v := range goPath {
+		if _, err := os.Stat(filepath.Join(v, "/src/agenda-go-cli/data/meetinginfo")); !os.IsNotExist(err) {
+			return &v
+		}
+	}
+	return nil
 }
