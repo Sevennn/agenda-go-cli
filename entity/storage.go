@@ -41,8 +41,9 @@ func init()  {
 }
 
 // Logout : logout
-func Logout() {
-	SetCurUser(nil)
+func Logout() error {
+	curUserName = nil
+	return Sync()
 }
 
 // Sync : sync file
@@ -307,13 +308,12 @@ func writeString(path string, data *string) error {
 	}
 	defer file.Close()
 
-	if data == nil {
-		return nil
-	}
 	writer := bufio.NewWriter(file)
-	if _, err := writer.WriteString(*data); err != nil {
-		loghelper.Error.Println("Write file fail:", path)
-		return err
+	if data != nil {
+		if _, err := writer.WriteString(*data); err != nil {
+			loghelper.Error.Println("Write file fail:", path)
+			return err
+		}
 	}
 	if err := writer.Flush(); err != nil {
 		loghelper.Error.Println("Flush file fail:", path)
