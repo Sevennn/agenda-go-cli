@@ -16,26 +16,35 @@ package cmd
 
 import (
 	"fmt"
-
+	"agenda-go-cli/service"
 	"github.com/spf13/cobra"
 )
 
 // registerCmd represents the register command
 var registerCmd = &cobra.Command{
 	Use:   "register",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "register user",
 	Run: func(cmd *cobra.Command, args []string) {
 		tmp_u, _ := cmd.Flags().GetString("username")
 		tmp_p, _ := cmd.Flags().GetString("password")
 		tmp_m, _ := cmd.Flags().GetString("email")
 		tmp_c, _ := cmd.Flags().GetString("cellphone")
-		fmt.Println("register args : ", tmp_u, tmp_p, tmp_m, tmp_c)
+		if tmp_u == "" || tmp_p == "" || tmp_m == "" || tmp_c == "" {
+			fmt.Println("Please tell us your username[-u], password[-p], email[-e], cellphone[-c]")
+			return
+		}
+		pass, err := service.UserRegister(tmp_u, tmp_p, tmp_m,tmp_c)
+		if pass == false {
+			fmt.Println("Username existed!")
+			return
+		} else {
+			if err != nil {
+				fmt.Println("Some unexpected error happened when try to record your info,Please read error.log for detail")
+				return
+			} else {
+				fmt.Println("Successfully register!")
+			}
+		}
 	},
 }
 

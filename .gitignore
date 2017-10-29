@@ -1,5 +1,5 @@
-./LICENSE
-
+.LICENSE
+.gvm_local/
 # Binaries for programs and plugins
 *.exe
 *.dll

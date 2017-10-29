@@ -4,6 +4,7 @@ package entity
 import (
     "fmt"
     "strconv"
+    "errors"
     // "agenda-go-cli/loghelper"
 )
 type Date struct {
@@ -103,38 +104,39 @@ func String2Int(s string) int {
 * 0000-00-00/00:00
 * @return a date
 */
-func stringToDate(t_dateString string) Date {
+func StringToDate(t_dateString string) (Date, error) {
     var resultDate Date
+    var wDate Date
     //检查字符串的格式是否正确．
     if (len(t_dateString) != 16) {
-        return resultDate
+        return resultDate, nil
     }
     var count int = 0 
     for count < len(t_dateString) {
         switch count {
             case 4:
                 if t_dateString[4] != '-' {
-                    return resultDate
+                    return resultDate, nil
                 }
                 break
             case 7:
                 if t_dateString[7] != '-' {
-                    return resultDate
+                    return resultDate, nil
                 }
                 break
             case 10:
                 if t_dateString[10] != '/' {
-                    return resultDate
+                    return resultDate, nil
                 }
                 break
             case 13:
                 if t_dateString[13] != ':' {
-                    return resultDate
+                    return resultDate, nil
                 }
                 break
             default:
                 if t_dateString[count] < '0' || t_dateString[count] > '9' {
-                    return resultDate
+                    return resultDate, nil
                 }
         }
     }
@@ -144,7 +146,11 @@ func stringToDate(t_dateString string) Date {
     resultDate.SetDay(String2Int(t_dateString[6:8]))
     resultDate.SetHour(String2Int(t_dateString[8:10]))
     resultDate.SetMinute(String2Int(t_dateString[10:12]))
-    return resultDate
+    if resultDate != wDate {
+        return resultDate, nil
+    } else {
+        return resultDate, errors.New("wrong")
+    }
 }
 /**
 *   @brief convert the date to string, if result length is 1, add padding 0
@@ -159,18 +165,23 @@ func Int2String(a int) string{
 * 0000-00-00/00:00
 */
 
-func DateToString(t_date Date) string {
+func DateToString(t_date Date) (string, error) {
     var dateString string = ""
+    var wString string = ""
     var initTime string = "0000-00-00/00:00"
     //若date的格式错误，则返回初始时间串0000-00-00/00:00
     if !IsValid(t_date) {
         dateString = initTime
-        return dateString
+        return dateString,nil
     }
     dateString = Int2String(t_date.GetYear()) + "-" + Int2String(t_date.GetMonth()) +
         "-" + Int2String(t_date.GetDay()) + "/" + Int2String(t_date.GetHour()) +
         ":" + Int2String(t_date.GetMinute())
-    return dateString
+    if dateString != wString {
+        return dateString, nil
+    } else {
+        return dateString, errors.New("wrong")
+    }
 }
 /**
 *  @brief overload the assign operator
