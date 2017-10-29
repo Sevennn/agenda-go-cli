@@ -16,23 +16,29 @@ package cmd
 
 import (
 	"fmt"
-
+	"agenda-go-cli/service"
 	"github.com/spf13/cobra"
 )
 
 // quitmeetingCmd represents the quitmeeting command
 var quitmeetingCmd = &cobra.Command{
 	Use:   "quitmeeting",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "quit a meeting",
 	Run: func(cmd *cobra.Command, args []string) {
 		tmp_t, _ := cmd.Flags().GetString("title")
-		fmt.Println("quitmeeting args : ", tmp_t)
+		if tmp_t == "" {
+			fmt.Println("Please input meeting title")
+			return
+		}
+		if user,flag := service.GetCurUser(); flag != true {
+			fmt.Println("Error: Please login firstly!")
+		} else {
+			if flag := service.QuitMeeting(user.Name, tmp_t); flag == false {
+				fmt.Println("Error: Meeting not exist or you're not a participator of it")
+			} else {
+				fmt.Println("Quit Successfully")
+			}
+		}
 	},
 }
 

@@ -16,7 +16,7 @@ package cmd
 
 import (
 	"fmt"
-
+	"agenda-go-cli/service"
 	"github.com/spf13/cobra"
 )
 
@@ -32,7 +32,19 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		tmp_t, _ := cmd.Flags().GetString("title")
-		fmt.Println("deletemeeting args : ", tmp_t)
+		if tmp_t == "" {
+			fmt.Println("Error: Please input meeting title")
+			return
+		}
+		if user,flag := service.GetCurUser(); flag != true {
+			fmt.Println("Error: Please login firstly!")
+		} else {
+			if c := service.DeleteMeeting(user.Name, tmp_t); c == 0 {
+				fmt.Println("Error: Meeting not exist or you're not a Sponsor of it")
+			} else {
+				fmt.Println("Delete Successfully")
+			}
+		}
 	},
 }
 

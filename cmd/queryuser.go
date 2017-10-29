@@ -25,6 +25,9 @@ var queryuserCmd = &cobra.Command{
 	Use:   "queryuser",
 	Short: "To query user",
 	Run: func(cmd *cobra.Command, args []string) {
+		if _, flag := service.GetCurUser(); flag != true {
+			fmt.Println("Please Log in firstly")
+		}
 		ru := service.ListAllUser()
 		for _, u := range ru {
 			fmt.Println("----------------")

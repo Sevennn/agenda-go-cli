@@ -41,8 +41,9 @@ func init()  {
 }
 
 // Logout : logout
-func Logout() {
-	SetCurUser(nil)
+func Logout() error {
+	curUserName = nil
+	return Sync()
 }
 
 // Sync : sync file

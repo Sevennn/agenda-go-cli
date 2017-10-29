@@ -16,24 +16,44 @@ package cmd
 
 import (
 	"fmt"
-
+	"agenda-go-cli/service"
+	"agenda-go-cli/entity"
 	"github.com/spf13/cobra"
 )
 
 // querymeetingCmd represents the querymeeting command
 var querymeetingCmd = &cobra.Command{
 	Use:   "querymeeting",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "query meetings in a time interval",
 	Run: func(cmd *cobra.Command, args []string) {
 		tmp_s, _ := cmd.Flags().GetString("starttime")
 		tmp_e, _ := cmd.Flags().GetString("endtime")
-		fmt.Println("querymeeting args : ", tmp_s, tmp_e)
+		if tmp_s == "" || tmp_e == "" {
+			fmt.Println("Please input start time and end time both")
+			return
+		}
+		if user,flag := service.GetCurUser(); flag != true {
+			fmt.Println("Please log in firstly")
+		} else {
+			if ml,flag :=service.QueryMeeting(user.Name, tmp_s,tmp_e); flag != true {
+				fmt.Println("Wrong Date!please input the date as yyyy-mm-dd/hh:mm and make sure that starttiem <= endtime")
+			} else {
+				for _, m := range ml {
+					fmt.Println("----------------")
+					fmt.Println("Title: ", m.Title)
+					ts,_ := entity.DateToString(m.StartDate)
+					fmt.Println("Start Time", ts)
+					te,_ := entity.DateToString(m.EndDate)
+					fmt.Println("End Time", te)
+					fmt.Printf("Participator(s): ")
+					for _, p := range m.Participators {
+						fmt.Printf(p," ")
+					}
+					fmt.Printf("\n")
+					fmt.Println("----------------")
+				}
+			}
+		}
 	},
 }
 

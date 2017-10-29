@@ -95,7 +95,7 @@ func IsValid(t_date Date) bool {
 func String2Int(s string) int {
     result,error :=strconv.Atoi(s)
     if error != nil{
-        fmt.Println("fail")
+        fmt.Println(error)
     }
     return result
 }
@@ -139,14 +139,16 @@ func StringToDate(t_dateString string) (Date, error) {
                     return resultDate, nil
                 }
         }
+        count++
     }
     //若字符串格式没问题
+
     resultDate.SetYear(String2Int(t_dateString[0:4]))
-    resultDate.SetMonth(String2Int(t_dateString[4:6]))
-    resultDate.SetDay(String2Int(t_dateString[6:8]))
-    resultDate.SetHour(String2Int(t_dateString[8:10]))
-    resultDate.SetMinute(String2Int(t_dateString[10:12]))
-    if resultDate != wDate {
+    resultDate.SetMonth(String2Int(t_dateString[5:7]))
+    resultDate.SetDay(String2Int(t_dateString[8:10]))
+    resultDate.SetHour(String2Int(t_dateString[11:13]))
+    resultDate.SetMinute(String2Int(t_dateString[14:]))
+    if resultDate.IsSameDate(wDate) {
         return resultDate, nil
     } else {
         return resultDate, errors.New("wrong")
@@ -243,10 +245,10 @@ func (m_date Date) MoreThan (t_date Date) bool {
     return false
 }
 func (m_date Date) LessThan (t_date Date) bool {
-    if m_date.IsSameDate(t_date)== false && !m_date.MoreThan(t_date)== false {
-        return false
+    if m_date.IsSameDate(t_date)== false && m_date.MoreThan(t_date)== false {
+        return true
     }
-    return true
+    return false
 }
 /**
 * @brief check whether the CurrentDate is  greater or equal than the

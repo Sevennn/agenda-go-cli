@@ -16,7 +16,7 @@ package cmd
 
 import (
 	"fmt"
-	// "agenda-go-cli/service"
+	"agenda-go-cli/service"
 	"github.com/spf13/cobra"
 )
 
@@ -25,7 +25,11 @@ var logoutCmd = &cobra.Command{
 	Use:   "logout",
 	Short: "User logout",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("logout called")
+		if err := service.UserLogout(); err != true {
+			fmt.Println("Some error happened when log out, please read error.log for details")
+		} else {
+			fmt.Println("Logout Successfully")
+		}
 	},
 }
 
