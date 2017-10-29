@@ -31,7 +31,9 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("querymeeting called")
+		tmp_s, _ := cmd.Flags().GetString("starttime")
+		tmp_e, _ := cmd.Flags().GetString("endtime")
+		fmt.Println("querymeeting args : ", tmp_s, tmp_e)
 	},
 }
 
@@ -39,7 +41,8 @@ func init() {
 	RootCmd.AddCommand(querymeetingCmd)
 
 	// Here you will define your flags and configuration settings.
-
+	querymeetingCmd.Flags().StringP("starttime", "s", "", "the start time of the meeting")
+	querymeetingCmd.Flags().StringP("endtime", "e", "", "the end time of the meeting")
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// querymeetingCmd.PersistentFlags().String("foo", "", "A help for foo")

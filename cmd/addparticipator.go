@@ -16,30 +16,33 @@ package cmd
 
 import (
 	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
 // addparticipatorCmd represents the addparticipator command
 var addparticipatorCmd = &cobra.Command{
 	Use:   "addparticipator",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "add participators",
+	Long: `This is a command to add participator(s) to a a meeting specified by title`,
+	Args: cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("addparticipator called")
+		tmp_p, _ := cmd.Flags().GetString("participator")
+		tmp_t, _ := cmd.Flags().GetString("title")
+		fmt.Println("addparticipator args : ", tmp_p, tmp_t)
 	},
 }
+var (
+	p *string
+	t *string
+)
+
 
 func init() {
 	RootCmd.AddCommand(addparticipatorCmd)
 
 	// Here you will define your flags and configuration settings.
-
+	p = addparticipatorCmd.Flags().StringP("participator", "p", "", "participator(s) you want to add, split by comma")
+	t = addparticipatorCmd.Flags().StringP("title", "t", "", "the title of meeting")
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// addparticipatorCmd.PersistentFlags().String("foo", "", "A help for foo")

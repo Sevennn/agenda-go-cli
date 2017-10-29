@@ -20,6 +20,7 @@ var (
 
 	// GoPath : GoPath
 	GoPath string
+
 )
 
 var errlog *os.File
@@ -57,6 +58,7 @@ func Free()  {
 }
 
 func getErrLogFile() *os.File  {
+
 	if sP := GetGOPATH(); sP != nil {
 		GoPath = *sP
 	} else {
@@ -64,6 +66,7 @@ func getErrLogFile() *os.File  {
 		os.Exit(1)
 	}
 	logPath := filepath.Join(GoPath, "/src/agenda-go-cli/data/error.log")
+
 	file, err := os.OpenFile(logPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalf("file open error : %v\n", err)
