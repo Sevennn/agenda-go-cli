@@ -159,9 +159,9 @@ func TestCreateMeeting(t *testing.T) {
 		args args
 		want []Meeting
 	}{
-		{"CM " + meetings[0].Tittle, args{&meetings[0]}, meetings[:1]},
-		{"CM" + meetings[1].Tittle, args{&meetings[1]}, meetings[:2]},
-		{"CM" + meetings[2].Tittle, args{&meetings[2]}, meetings[:]},
+		{"CM " + meetings[0].Title, args{&meetings[0]}, meetings[:1]},
+		{"CM" + meetings[1].Title, args{&meetings[1]}, meetings[:2]},
+		{"CM" + meetings[2].Title, args{&meetings[2]}, meetings[:]},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -219,16 +219,16 @@ func TestUpdateMeeting(t *testing.T) {
 				return v.Sponsor == "u1"
 			},
 				func(v *Meeting) {
-					v.Tittle = "u1 Sponsor"
+					v.Title = "u1 Sponsor"
 				}},
 			2,
 		},
-		{"UM Tittle:u1 u2 u3",
+		{"UM Title:u1 u2 u3",
 			args{func(v *Meeting) bool {
-				return v.Tittle == "u1 u2 u3"
+				return v.Title == "u1 u2 u3"
 			},
 				func(v *Meeting) {
-					v.Tittle = "Error"
+					v.Title = "Error"
 				}},
 			0,
 		},
