@@ -4,7 +4,7 @@ import (
 	"os"
 	"io"
 	"bufio"
-	// "path/filepath"
+	"path/filepath"
 	"errors"
 	"log"
 	"encoding/json"
@@ -16,9 +16,9 @@ type UserFilter func (*User) bool
 // MeetingFilter : MeetingFilter types take an *User and return a bool value.
 type MeetingFilter func (*Meeting) bool
 
-var userinfoPath = "../data/userinfo"
-var metinfoPath = "../data/meetinginfo"
-var curUserPath = "../data/curUser.txt"
+var userinfoPath = "/src/agenda-go-cli/data/userinfo"
+var metinfoPath = "/src/agenda-go-cli/data/meetinginfo"
+var curUserPath = "/src/agenda-go-cli/data/curUser.txt"
 
 var curUserName *string;
 
@@ -32,18 +32,17 @@ var errLog *log.Logger
 func init()  {
 	errLog = loghelper.Error
 	dirty = false
-	// birDir := os.Getenv("GOPATH")
-	// userinfoPath = filepath.Join(birDir, userinfoPath)
-	// metinfoPath = filepath.Join(birDir, metinfoPath)
-	// curUserPath = filepath.Join(birDir, curUserPath)
+	userinfoPath = filepath.Join(loghelper.GoPath, userinfoPath)
+	metinfoPath = filepath.Join(loghelper.GoPath, metinfoPath)
+	curUserPath = filepath.Join(loghelper.GoPath, curUserPath)
 	if err := readFromFile(); err != nil {
 		errLog.Println("readFromFile fail:", err)
 	}
 }
 
 // Logout : logout
-func Logout() error {
-	return Sync()
+func Logout() {
+	SetCurUser(nil)
 }
 
 // Sync : sync file
@@ -186,6 +185,10 @@ func GetCurUser() (User, error) {
 // SetCurUser : get current user
 // @param current user
 func SetCurUser(u *User) {
+	if u == nil {
+		curUserName = nil
+		return
+	}
 	if (curUserName == nil) {
 		p := u.Name
 		curUserName = &p
