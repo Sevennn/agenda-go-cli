@@ -16,24 +16,35 @@ package cmd
 
 import (
 	"fmt"
-
+	"strings"
+	"agenda-go-cli/service"
 	"github.com/spf13/cobra"
 )
+
 
 // removeparticipatorCmd represents the removeparticipator command
 var removeparticipatorCmd = &cobra.Command{
 	Use:   "removeparticipator",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "remove participator(s)",
 	Run: func(cmd *cobra.Command, args []string) {
+		errLog.Println("Remove Participator called")
 		tmp_t,_ := cmd.Flags().GetString("title")
 		tmp_p,_ := cmd.Flags().GetString("participator")
-		fmt.Println("removeparticipator args : ", tmp_t, tmp_p)
+		if tmp_t == "" || tmp_p == "" {
+			fmt.Println("Please input title and participator(s)(split by comma)")
+			return
+		}
+		if user, flag := service.GetCurUser(); flag != true {
+			fmt.Println("Please login firstly")
+		} else {
+			participators := strings.Split(tmp_p, ",")
+			flag := service.RemoveMeetingParticipator(user.Name, tmp_t, participators)
+			if flag != true {
+				fmt.Println("Unexpected error. Check error.log for detail")
+			} else {
+				fmt.Println("Remove successfully")
+			}
+		}
 	},
 }
 

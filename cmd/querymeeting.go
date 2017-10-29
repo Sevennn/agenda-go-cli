@@ -26,6 +26,7 @@ var querymeetingCmd = &cobra.Command{
 	Use:   "querymeeting",
 	Short: "query meetings in a time interval",
 	Run: func(cmd *cobra.Command, args []string) {
+		errLog.Println("Query Meeting called")
 		tmp_s, _ := cmd.Flags().GetString("starttime")
 		tmp_e, _ := cmd.Flags().GetString("endtime")
 		if tmp_s == "" || tmp_e == "" {

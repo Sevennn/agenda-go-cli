@@ -21,7 +21,13 @@ import (
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"agenda-go-cli/loghelper"
+	"log"
 )
+var errLog *log.Logger
+func init() {
+	errLog = loghelper.Error
+}
 
 var cfgFile string
 

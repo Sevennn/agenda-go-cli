@@ -106,53 +106,53 @@ func String2Int(s string) int {
 */
 func StringToDate(t_dateString string) (Date, error) {
     var resultDate Date
-    var wDate Date
     //检查字符串的格式是否正确．
     if (len(t_dateString) != 16) {
-        return resultDate, nil
+        return resultDate, errors.New("wrong")
     }
     var count int = 0 
     for count < len(t_dateString) {
         switch count {
             case 4:
                 if t_dateString[4] != '-' {
-                    return resultDate, nil
+                    return resultDate, errors.New("wrong")
                 }
                 break
             case 7:
                 if t_dateString[7] != '-' {
-                    return resultDate, nil
+                    return resultDate, errors.New("wrong")
                 }
                 break
             case 10:
                 if t_dateString[10] != '/' {
-                    return resultDate, nil
+                    return resultDate, errors.New("wrong")
                 }
                 break
             case 13:
                 if t_dateString[13] != ':' {
-                    return resultDate, nil
+                    return resultDate, errors.New("wrong")
                 }
                 break
             default:
                 if t_dateString[count] < '0' || t_dateString[count] > '9' {
-                    return resultDate, nil
+                    return resultDate, errors.New("wrong")
                 }
         }
         count++
     }
     //若字符串格式没问题
 
-    resultDate.SetYear(String2Int(t_dateString[0:4]))
-    resultDate.SetMonth(String2Int(t_dateString[5:7]))
-    resultDate.SetDay(String2Int(t_dateString[8:10]))
-    resultDate.SetHour(String2Int(t_dateString[11:13]))
-    resultDate.SetMinute(String2Int(t_dateString[14:]))
-    if resultDate.IsSameDate(wDate) {
-        return resultDate, nil
-    } else {
-        return resultDate, errors.New("wrong")
-    }
+    // resultDate.SetYear(String2Int(t_dateString[0:4]))
+    resultDate.Year = String2Int(t_dateString[0:4])
+    // resultDate.SetMonth(String2Int(t_dateString[5:7]))
+    resultDate.Month = String2Int(t_dateString[5:7])
+    // resultDate.SetDay(String2Int(t_dateString[8:10]))
+    resultDate.Day = String2Int(t_dateString[8:10])
+    // resultDate.SetHour(String2Int(t_dateString[11:13]))
+    resultDate.Hour = String2Int(t_dateString[11:13])
+    // resultDate.SetMinute(String2Int(t_dateString[14:]))
+    resultDate.Minute = String2Int(t_dateString[14:])
+    return resultDate,nil
 }
 /**
 *   @brief convert the date to string, if result length is 1, add padding 0

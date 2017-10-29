@@ -25,6 +25,7 @@ var deleteaccountCmd = &cobra.Command{
 	Use:   "deleteaccount",
 	Short: "to delete current user",
 	Run: func(cmd *cobra.Command, args []string) {
+		errLog.Println("Delete account called")
 		if user,flag := service.GetCurUser(); flag != true {
 			fmt.Println("You need login firstly!")
 		} else {

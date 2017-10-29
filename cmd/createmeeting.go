@@ -16,26 +16,37 @@ package cmd
 
 import (
 	"fmt"
-
+	"strings"
 	"github.com/spf13/cobra"
+	"agenda-go-cli/service"
 )
 
 // createmeetingCmd represents the createmeeting command
 var createmeetingCmd = &cobra.Command{
 	Use:   "createmeeting",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "create meeting command",
 	Run: func(cmd *cobra.Command, args []string) {
+		errLog.Println("Create Meeting Called")
 		tmp_t, _ := cmd.Flags().GetString("title")
 		tmp_p, _ := cmd.Flags().GetString("participator")
 		tmp_s, _ := cmd.Flags().GetString("starttime")
 		tmp_e, _ := cmd.Flags().GetString("endtime")
-		fmt.Println("createmeeting args : ", tmp_t, tmp_p, tmp_s, tmp_e)
+		if tmp_t == "" || tmp_p == "" || tmp_s == "" || tmp_e == "" {
+			fmt.Println("Please input title, starttime[yyyy-mm-dd/hh:mm],endtime,participator(split by comma)")
+			return
+		}
+		if user, flag := service.GetCurUser(); flag != true {
+			fmt.Println("Error: please login firstly")
+			return
+		} else {
+			participators := strings.Split(tmp_p,",")
+			if flag := service.CreateMeeting(user.Name, tmp_t,tmp_s,tmp_e,participators); flag != true {
+				fmt.Println("Error: create Failed. Please check error.log for more detail")
+				return
+			} else {
+				fmt.Println("Create meeting successfully!")
+			}
+		}
 	},
 }
 

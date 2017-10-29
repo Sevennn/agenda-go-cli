@@ -4,6 +4,7 @@ import (
 	"agenda-go-cli/entity"
 	"agenda-go-cli/loghelper"
 	"log"
+	"fmt"
 )
 
 
@@ -15,7 +16,7 @@ func init() {
 	errLog = loghelper.Error
 }
 func UserLogout() bool {
-	if err := entity.Sync(); err != nil {
+	if err := entity.Logout(); err != nil {
 		return false
 	} else {
 		return true
@@ -102,10 +103,14 @@ func CreateMeeting(username string, title string, startDate string, endDate stri
 			errLog.Println("Create Meeting: no such a user : ", i)
 			return false
 		}
+		dc := 0
 		for _, j := range participator {
 			if j == i {
-				errLog.Println("Create Meeting: duplicate participator")
-				return false
+				dc++
+				if dc == 2 {
+					errLog.Println("Create Meeting: duplicate participator")
+					return false
+				}
 			}
 		}
 	}
@@ -119,6 +124,7 @@ func CreateMeeting(username string, title string, startDate string, endDate stri
 		errLog.Println("Create Meeting: Wrong Date")
 		return false
 	}
+	fmt.Println(sTime.Year)
 	if eTime.LessThan(sTime) == true {
 		errLog.Println("Create Meeting: Start Time greater than end time")
 		return false
@@ -268,6 +274,9 @@ func AddMeetingParticipator(username string, title string, participators []strin
 		errLog.Println("Add Meeting Participator: no such meeting")
 		return false
 	}
+	if err := entity.Sync(); err != nil {
+		return false
+	}
 	return true
 }
 
@@ -297,6 +306,9 @@ func RemoveMeetingParticipator(username string, title string, participators []st
 	})
 	if mt == 0 {
 		errLog.Println("Remove Meeting Participator: no such a meeting: ", title)
+		return false
+	}
+	if err := entity.Sync(); err != nil {
 		return false
 	}
 	return true

@@ -19,12 +19,12 @@ import (
 	"agenda-go-cli/service"
 	"github.com/spf13/cobra"
 )
-
 // clearmeetingCmd represents the clearmeeting command
 var clearmeetingCmd = &cobra.Command{
 	Use:   "clearmeeting",
 	Short: "Clear all meeting as a sponsor",
 	Run: func(cmd *cobra.Command, args []string) {
+		errLog.Println("Clear Meeting called")
 		if user, flag := service.GetCurUser(); flag != true {
 			fmt.Println("Please Log in firstly!")
 		} else {

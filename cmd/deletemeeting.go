@@ -23,14 +23,9 @@ import (
 // deletemeetingCmd represents the deletemeeting command
 var deletemeetingCmd = &cobra.Command{
 	Use:   "deletemeeting",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "delete meeting",
 	Run: func(cmd *cobra.Command, args []string) {
+		errLog.Println("Delete Meeting called")
 		tmp_t, _ := cmd.Flags().GetString("title")
 		if tmp_t == "" {
 			fmt.Println("Error: Please input meeting title")

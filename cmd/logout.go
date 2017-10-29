@@ -25,6 +25,7 @@ var logoutCmd = &cobra.Command{
 	Use:   "logout",
 	Short: "User logout",
 	Run: func(cmd *cobra.Command, args []string) {
+		errLog.Println("Logout called")
 		if err := service.UserLogout(); err != true {
 			fmt.Println("Some error happened when log out, please read error.log for details")
 		} else {

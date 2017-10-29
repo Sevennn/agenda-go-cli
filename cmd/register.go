@@ -19,12 +19,12 @@ import (
 	"agenda-go-cli/service"
 	"github.com/spf13/cobra"
 )
-
 // registerCmd represents the register command
 var registerCmd = &cobra.Command{
 	Use:   "register",
 	Short: "register user",
 	Run: func(cmd *cobra.Command, args []string) {
+		errLog.Println("Register called")
 		tmp_u, _ := cmd.Flags().GetString("username")
 		tmp_p, _ := cmd.Flags().GetString("password")
 		tmp_m, _ := cmd.Flags().GetString("email")

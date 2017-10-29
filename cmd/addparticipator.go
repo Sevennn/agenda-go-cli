@@ -17,6 +17,8 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"strings"
+	"agenda-go-cli/service"
 )
 
 // addparticipatorCmd represents the addparticipator command
@@ -26,9 +28,24 @@ var addparticipatorCmd = &cobra.Command{
 	Long: `This is a command to add participator(s) to a a meeting specified by title`,
 	Args: cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
+		errLog.Println("Add participator called")
 		tmp_p, _ := cmd.Flags().GetString("participator")
 		tmp_t, _ := cmd.Flags().GetString("title")
-		fmt.Println("addparticipator args : ", tmp_p, tmp_t)
+		if tmp_p == "" || tmp_t == "" {
+			fmt.Println("Please input title and participator(s)(split by comma")
+			return
+		}
+		if user, flag := service.GetCurUser(); flag != true {
+			fmt.Println("Please login firstly")
+		} else {
+			participators := strings.Split(tmp_p,",")
+			flag := service.AddMeetingParticipator(user.Name, tmp_t, participators)
+			if flag != true {
+				fmt.Println("Unexpected error. Check error.log for detail")
+			} else {
+				fmt.Println("Successfully add")
+			}
+		}
 	},
 }
 var (

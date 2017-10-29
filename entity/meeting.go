@@ -121,7 +121,7 @@ func (m_meeting Meeting) IsParticipator(t_username string) bool {
 	}
 	return false
 }
-func (m_meeting Meeting) DeleteParticipator(t_username string) {
+func (m_meeting *Meeting) DeleteParticipator(t_username string) {
 	var i int
 	tl := len(m_meeting.Participators)
 	for i= 0; i< tl; i++ {
@@ -131,7 +131,7 @@ func (m_meeting Meeting) DeleteParticipator(t_username string) {
 		}
 	}
 }
-func (m_meeting Meeting) AddParticipator(t_username string) bool {
+func (m_meeting *Meeting) AddParticipator(t_username string) bool {
     var i int
     var flag bool
 		flag= true

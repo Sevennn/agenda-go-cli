@@ -25,6 +25,7 @@ var loginCmd = &cobra.Command{
 	Use:   "login",
 	Short: "For User login",
 	Run: func(cmd *cobra.Command, args []string) {
+		errLog.Println("Login called")
 		tmp_u, _ := cmd.Flags().GetString("username")
 		tmp_p, _ := cmd.Flags().GetString("password")
 		if tmp_u == "" || tmp_p == "" {

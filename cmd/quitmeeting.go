@@ -25,6 +25,7 @@ var quitmeetingCmd = &cobra.Command{
 	Use:   "quitmeeting",
 	Short: "quit a meeting",
 	Run: func(cmd *cobra.Command, args []string) {
+		errLog.Println("Quit Meeting called")
 		tmp_t, _ := cmd.Flags().GetString("title")
 		if tmp_t == "" {
 			fmt.Println("Please input meeting title")
