@@ -1,5 +1,6 @@
 .LICENSE
 .gvm_local/
+agenda-go-cli
 # Binaries for programs and plugins
 *.exe
 *.dll
