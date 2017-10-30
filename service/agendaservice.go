@@ -313,7 +313,7 @@ func RemoveMeetingParticipator(username string, title string, participators []st
 		return false
 	}
 	entity.DeleteMeeting(func(m *entity.Meeting) bool {
-		return m.Sponsor == username || len(m.GetParticipator()) == 0
+		return m.Sponsor == username && len(m.GetParticipator()) == 0
 	})
 	if err := entity.Sync(); err != nil {
 		return false
