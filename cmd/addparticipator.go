@@ -17,7 +17,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"strings"
+	// "strings"
 	"agenda-go-cli/service"
 )
 
@@ -29,17 +29,17 @@ var addparticipatorCmd = &cobra.Command{
 	Args: cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		errLog.Println("Add participator called")
-		tmp_p, _ := cmd.Flags().GetString("participator")
+		tmp_p, _ := cmd.Flags().GetStringSlice("participator")
 		tmp_t, _ := cmd.Flags().GetString("title")
-		if tmp_p == "" || tmp_t == "" {
-			fmt.Println("Please input title and participator(s)(split by comma")
+		if len(tmp_p) == 0 || tmp_t == "" {
+			fmt.Println("Please input title and participator(s)(input like \"name1, name2\")")
 			return
 		}
 		if user, flag := service.GetCurUser(); flag != true {
 			fmt.Println("Please login firstly")
 		} else {
-			participators := strings.Split(tmp_p,",")
-			flag := service.AddMeetingParticipator(user.Name, tmp_t, participators)
+			// participators := strings.Split(tmp_p,",")
+			flag := service.AddMeetingParticipator(user.Name, tmp_t, tmp_p)
 			if flag != true {
 				fmt.Println("Unexpected error. Check error.log for detail")
 			} else {
@@ -48,18 +48,14 @@ var addparticipatorCmd = &cobra.Command{
 		}
 	},
 }
-var (
-	p *string
-	t *string
-)
 
 
 func init() {
 	RootCmd.AddCommand(addparticipatorCmd)
 
 	// Here you will define your flags and configuration settings.
-	p = addparticipatorCmd.Flags().StringP("participator", "p", "", "participator(s) you want to add, split by comma")
-	t = addparticipatorCmd.Flags().StringP("title", "t", "", "the title of meeting")
+	addparticipatorCmd.Flags().StringSliceP("participator", "p", nil, "participator(s) you want to add, input like \"name1, name2\"")
+	addparticipatorCmd.Flags().StringP("title", "t", "", "the title of meeting")
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// addparticipatorCmd.PersistentFlags().String("foo", "", "A help for foo")

@@ -16,7 +16,7 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
+	// "strings"
 	"github.com/spf13/cobra"
 	"agenda-go-cli/service"
 )
@@ -28,19 +28,19 @@ var createmeetingCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		errLog.Println("Create Meeting Called")
 		tmp_t, _ := cmd.Flags().GetString("title")
-		tmp_p, _ := cmd.Flags().GetString("participator")
+		tmp_p, _ := cmd.Flags().GetStringSlice("participator")
 		tmp_s, _ := cmd.Flags().GetString("starttime")
 		tmp_e, _ := cmd.Flags().GetString("endtime")
-		if tmp_t == "" || tmp_p == "" || tmp_s == "" || tmp_e == "" {
-			fmt.Println("Please input title, starttime[yyyy-mm-dd/hh:mm],endtime,participator(split by comma)")
+		if tmp_t == "" || len(tmp_p) == 0 || tmp_s == "" || tmp_e == "" {
+			fmt.Println("Please input title, starttime[yyyy-mm-dd/hh:mm],endtime,participator(input like \"name1, name2\")")
 			return
 		}
 		if user, flag := service.GetCurUser(); flag != true {
 			fmt.Println("Error: please login firstly")
 			return
 		} else {
-			participators := strings.Split(tmp_p,",")
-			if flag := service.CreateMeeting(user.Name, tmp_t,tmp_s,tmp_e,participators); flag != true {
+			// participators := strings.Split(tmp_p,",")
+			if flag := service.CreateMeeting(user.Name, tmp_t,tmp_s,tmp_e,tmp_p); flag != true {
 				fmt.Println("Error: create Failed. Please check error.log for more detail")
 				return
 			} else {
@@ -55,7 +55,7 @@ func init() {
 
 	// Here you will define your flags and configuration settings.
 	createmeetingCmd.Flags().StringP("title", "t", "", "the title of meeting")
-	createmeetingCmd.Flags().StringP("participator", "p", "", "the participator(s) of the meeting, split by comma")
+	createmeetingCmd.Flags().StringSliceP("participator", "p", nil, "the participator(s) of the meeting, split by comma,input like \"name1, name2\"")
 	createmeetingCmd.Flags().StringP("starttime","s","","the startTime of the meeting")
 	createmeetingCmd.Flags().StringP("endtime", "e", "", "the endTime of the meeting")
 	// Cobra supports Persistent Flags which will work for this command

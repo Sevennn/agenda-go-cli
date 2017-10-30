@@ -4,7 +4,6 @@ import (
 	"agenda-go-cli/entity"
 	"agenda-go-cli/loghelper"
 	"log"
-	"fmt"
 )
 
 
@@ -124,7 +123,6 @@ func CreateMeeting(username string, title string, startDate string, endDate stri
 		errLog.Println("Create Meeting: Wrong Date")
 		return false
 	}
-	fmt.Println(sTime.Year)
 	if eTime.LessThan(sTime) == true {
 		errLog.Println("Create Meeting: Start Time greater than end time")
 		return false
@@ -240,10 +238,16 @@ func QuitMeeting(username string, title string) bool {
 	return true
 }
 
-func ClearMeeting(username string) int {
-	return entity.DeleteMeeting(func (m *entity.Meeting) bool {
+func ClearMeeting(username string) (int,bool) {
+	cm := entity.DeleteMeeting(func (m *entity.Meeting) bool {
 		return m.Sponsor == username
 	})
+	if err := entity.Sync(); err != nil {
+		errLog.Println("Clear Meeting: Delete failed")
+		return cm, false
+	} else {
+		return cm, true
+	}
 }
 
 func AddMeetingParticipator(username string, title string, participators []string) bool {
@@ -308,6 +312,9 @@ func RemoveMeetingParticipator(username string, title string, participators []st
 		errLog.Println("Remove Meeting Participator: no such a meeting: ", title)
 		return false
 	}
+	entity.DeleteMeeting(func(m *entity.Meeting) bool {
+		return m.Sponsor == username || len(m.GetParticipator()) == 0
+	})
 	if err := entity.Sync(); err != nil {
 		return false
 	}

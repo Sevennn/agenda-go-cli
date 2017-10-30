@@ -32,6 +32,10 @@ var loginCmd = &cobra.Command{
 			fmt.Println("Please input both username and password")
 			return
 		}
+		if _, flag := service.GetCurUser(); flag == true {
+			fmt.Println("Please logout firstly!")
+			return
+		}
 		if tf := service.UserLogin(tmp_u, tmp_p); tf == true {
 			fmt.Println("Login Successfully. Current User: ", tmp_u)
 		} else {

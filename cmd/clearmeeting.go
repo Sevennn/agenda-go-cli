@@ -28,8 +28,12 @@ var clearmeetingCmd = &cobra.Command{
 		if user, flag := service.GetCurUser(); flag != true {
 			fmt.Println("Please Log in firstly!")
 		} else {
-			cm := service.ClearMeeting(user.Name)
-			fmt.Println("Successfully clear ", cm," meeting(s)")
+			cm,flag := service.ClearMeeting(user.Name)
+			if flag == true {
+				fmt.Println("Successfully clear ", cm," meeting(s)")
+			} else {
+				fmt.Println("ClearMeeting failed. Check error.log")
+			}
 		}
 	},
 }
