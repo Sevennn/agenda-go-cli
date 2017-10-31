@@ -2,7 +2,7 @@ package loghelper
 
 import (
 	"io"
-	"io/ioutil"
+	//"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -23,7 +23,7 @@ var (
 
 )
 
-var errlog *os.File
+var errlog, infolog *os.File
 
 func set(
 	infoHandle io.Writer,
@@ -44,28 +44,30 @@ func set(
 }
 
 func init() {
-	errlog = getErrLogFile()
-	set(ioutil.Discard, os.Stdout, errlog)
-
-	// Info.Println("Special Information")
-	// Warning.Println("There is something you need to know about")
-	Error.Println("Start up")
-}
-
-// Free : close log file
-func Free()  {
-	errlog.Close()
-}
-
-func getErrLogFile() *os.File  {
-
 	if sP := GetGOPATH(); sP != nil {
 		GoPath = *sP
 	} else {
 		log.Fatalf("data file not ecist\n")
 		os.Exit(1)
 	}
-	logPath := filepath.Join(GoPath, "/src/agenda-go-cli/data/error.log")
+
+	infolog = getLogFile("/src/agenda-go-cli/data/info.log")
+	errlog = getLogFile("/src/agenda-go-cli/data/error.log")
+	set(infolog, os.Stdout, errlog)
+
+	Info.Println("Start up Info log")
+	// Warning.Println("There is something you need to know about")
+	Error.Println("Start up Error log")
+}
+
+// Free : close log file
+func Free()  {
+	errlog.Close()
+	infolog.Close()
+}
+
+func getLogFile(path string) *os.File  {
+	logPath := filepath.Join(GoPath, path)
 
 	file, err := os.OpenFile(logPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {

@@ -260,7 +260,7 @@ func AddMeetingParticipator(username string, title string, participators []strin
 			return false
 		}
 		qm := entity.QueryMeeting(func (m *entity.Meeting) bool {
-			return m.Sponsor == username && m.IsParticipator(p)
+			return m.Sponsor == username && m.Title == title && m.IsParticipator(p)
 		})
 		if len(qm) != 0 {
 			errLog.Println("Add Meeting Participator: ",p, "Already in meeting")
@@ -294,7 +294,7 @@ func RemoveMeetingParticipator(username string, title string, participators []st
 			return false
 		}
 		qm := entity.QueryMeeting(func (m *entity.Meeting) bool {
-			return m.Sponsor == username && m.IsParticipator(p)
+			return m.Sponsor == username && m.Title == title  && m.IsParticipator(p)
 		})
 		if len(qm) == 0 {
 			errLog.Println("Remove Meeting Participator: Not in Meeting :", p)
