@@ -26,7 +26,7 @@ import (
 )
 var errLog *log.Logger
 func init() {
-	errLog = loghelper.Error
+	errLog = loghelper.Info
 }
 
 var cfgFile string

@@ -2,3 +2,19 @@ language: go
 
 go:
   - 1.9
+  - tip
+
+notifications:
+  email: false
+
+go_import_path:
+  #/
+
+before_install:
+  - mv $HOME/gopath/src/github.com/LinJinghua/agenda-go-cli $HOME/gopath/src
+
+#install: true
+
+script:
+  - cd $HOME/gopath/src/agenda-go-cli
+  - go test -v ./...

@@ -9,6 +9,7 @@ import (
 	"log"
 	"encoding/json"
 	"agenda-go-cli/loghelper"
+	"agenda-go-cli/deepcopy"
 )
 
 // UserFilter : UserFilter types take an *User and return a bool value.
@@ -59,7 +60,7 @@ func Sync() error {
 // CreateUser : create a user
 // @param a user object
 func CreateUser(v *User) {
-	uData = append(uData, *v)
+	uData = append(uData, deepcopy.Copy(*v).(User))
 	dirty = true
 }
 
@@ -99,11 +100,15 @@ func UpdateUser(filter UserFilter, switcher func (*User)) int {
 // @return the number of deleted users
 func DeleteUser(filter UserFilter) int {
 	count := 0
-	for i, v := range uData {
-		if filter(&v) {
-			uData[i] = uData[len(uData) - 1]
-			uData = uData[:len(uData) - 1]
+	length := len(uData)
+	for i := 0; i < length; {
+		if filter(&uData[i]) {
+			length--
+			uData[i] = uData[length]
+			uData = uData[:length]
 			count++
+		} else {
+			i++
 		}
 	}
 	if count > 0 {
@@ -115,7 +120,7 @@ func DeleteUser(filter UserFilter) int {
 // CreateMeeting : create a meeting
 // @param a meeting object
 func CreateMeeting(v *Meeting) {
-	mData = append(mData, *v)
+	mData = append(mData, deepcopy.Copy(*v).(Meeting))
 	dirty = true
 }
 
@@ -155,11 +160,15 @@ func UpdateMeeting(filter MeetingFilter, switcher func (*Meeting)) int {
 // @return the number of deleted meetings
 func DeleteMeeting(filter MeetingFilter) int {
 	count := 0
-	for i, v := range mData {
-		if filter(&v) {
-			mData[i] = mData[len(mData) - 1]
-			mData = mData[:len(mData) - 1]
+	length := len(mData)
+	for i := 0; i < length; {
+		if filter(&mData[i]) {
+			length--
+			mData[i] = mData[length]
+			mData = mData[:length]
 			count++
+		} else {
+			i++
 		}
 	}
 	if count > 0 {

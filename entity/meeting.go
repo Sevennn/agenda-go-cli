@@ -132,20 +132,9 @@ func (m_meeting *Meeting) DeleteParticipator(t_username string) {
 	}
 }
 func (m_meeting *Meeting) AddParticipator(t_username string) bool {
-    var i int
-    var flag bool
-		flag= true
-		tl := len(m_meeting.Participators)
-	for i= 0; i< tl; i++ {
-		if strings.EqualFold(m_meeting.Participators[i], t_username)== true {
-	    	flag= false
-	    	return false
-			break
-		}
+	if strings.EqualFold(m_meeting.Sponsor, t_username) || m_meeting.IsParticipator(t_username) {
+		return false
 	}
-	if flag == true {
-		m_meeting.Participators = append(m_meeting.Participators,t_username)
-		return true
-	}
-	return false
+	m_meeting.Participators = append(m_meeting.Participators,t_username)
+	return true
 }
