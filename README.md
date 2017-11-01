@@ -1,7 +1,7 @@
 # Agenda for Golang
 
 ------
-[![Build Status](https://travis-ci.org/LinJinghua/agenda-go-cli.svg?branch=test)](https://travis-ci.org/LinJinghua/agenda-go-cli)
+[![Build Status](https://travis-ci.org/Sevennn/agenda-go-cli.svg?branch=master)](https://travis-ci.org/Sevennn/agenda-go-cli)
 
 我们此次作业使用Cobra实现了终端的Agenda系统，主要包括以下功能：
 
