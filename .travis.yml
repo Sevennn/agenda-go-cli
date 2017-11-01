@@ -11,7 +11,7 @@ go_import_path:
   #/
 
 before_install:
-  - mv $HOME/gopath/src/github.com/LinJinghua/agenda-go-cli $HOME/gopath/src
+  - mv $HOME/gopath/src/github.com/Sevennn/agenda-go-cli $HOME/gopath/src
 
 #install: true
 
