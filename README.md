@@ -30,11 +30,10 @@
 
 ## 具体运行
 
-从github上下载到本地，在linux下的agenda-go-cli-master下运行go build然后在终端进入当前文件夹，使用./agenda-go-cli加上你所需要的操作命令便可以运行。（当然你需要完成Go语言的相关环境配置）
+从github上下载到本地放至$GOPATH/src下并重命名为agenda-go-cli，在agenda-go-cli下终端运行go build，使用./agenda-go-cli加上你所需要的操作命令便可以运行。（当然你需要完成Go语言的相关环境配置）
         
-#运行指令和运行截图
+### 运行指令和运行截图
 
-具体运行过程与实验要求截图可以参见我们的实验博客
 [实验要求截图可以参见我们的实验博客]( http://blog.csdn.net/qq_33689717/article/details/78403706/)
 
 
